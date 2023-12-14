@@ -1,10 +1,8 @@
 ![Title](./readmeAssets/Title.png)
 
-# Fundamentals of Game Networking
-
 ## Overview
 
-### Indicative Content
+### *Indicative Content*
 ### Network fundamentals
 IP, TCP, UDP, Sockets, latency, bandwidth, packet loss
 ### Network architectures
