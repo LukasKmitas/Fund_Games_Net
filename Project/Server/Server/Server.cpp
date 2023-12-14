@@ -87,11 +87,10 @@ void Server::run()
 										std::cout << "	ID: " << itr.getId() << " Name: " << itr.getName() << std::endl;
 									}
 								}
-
-								std::cout << "Number of players: " << m_playerNumber << std::endl;
 								m_selector.remove(*m_playerList[i].getSocket());
 								m_playerList.erase(m_playerList.begin() + i);
 								m_playerNumber--;
+								std::cout << "Number of players in server: " << m_playerNumber << std::endl;
 								break;
 							}
 							//Number 2 means the server is full
