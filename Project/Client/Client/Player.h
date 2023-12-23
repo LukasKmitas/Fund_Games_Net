@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-class Player : public sf::Sprite
+class Player
 {
 public:
 	Player();
@@ -20,6 +20,10 @@ public:
 	sf::Vector2f getPosition() { return m_circle.getPosition(); }
 	float getRadius() { return m_circle.getRadius(); }
 
+	bool getPlayerTag() { return isTagged; }
+
+	sf::CircleShape m_circle;
+	bool isTagged;
 private:
 
 	void initPlayer();
@@ -27,8 +31,6 @@ private:
 
 	sf::Texture m_playerTexture;
 	sf::Sprite m_playerSprite;
-
-	sf::CircleShape m_circle;
 
 	int m_id;
 	std::string m_name;

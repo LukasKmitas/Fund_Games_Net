@@ -19,11 +19,17 @@ public:
 	void setPosition(sf::Vector2f position) { m_circle.setPosition(position); }
 	sf::Vector2f getPosition() { return m_circle.getPosition(); }
 
+	void setTaggedStatus(bool tagged);
+
+	sf::CircleShape m_circle;
+	bool isTagged;
+
+	sf::Clock collisionCooldown;
+	sf::Time cooldownDuration;
+
 private:
 
 	void initEnemy();
-
-	sf::CircleShape m_circle;
 
 	int m_id;
 	std::string m_name;

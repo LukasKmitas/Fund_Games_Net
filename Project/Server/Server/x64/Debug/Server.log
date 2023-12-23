@@ -1,6 +1,4 @@
-﻿  main.cpp
-  Player.cpp
-  Server.cpp
+﻿  Server.cpp
+  main.cpp
   Generating Code...
-  LINK : E:\Program Files E\Year 4\Fun Gms Net - Lei\New folder\Fund_Games_Net\Project\Server\x64\Debug\Server.exe not found or not built by the last incremental link; performing full link
-  Server.vcxproj -> E:\Program Files E\Year 4\Fun Gms Net - Lei\New folder\Fund_Games_Net\Project\Server\x64\Debug\Server.exe
+  Server.vcxproj -> E:\Program Files E\Year 4\Fun Gms Net - Lei\Fund_Games_Net\Project\Server\x64\Debug\Server.exe

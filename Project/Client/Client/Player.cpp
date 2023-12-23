@@ -1,12 +1,11 @@
 #include "Player.h"
 
 
-Player::Player() : m_id(-1)
+Player::Player() : m_id(-1), isTagged(false)
 {
 	initPlayer();
 	m_velocity = sf::Vector2f(0.0f, 0.0f);
 }
-
 
 Player::~Player()
 {

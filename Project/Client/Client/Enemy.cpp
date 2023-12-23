@@ -3,13 +3,8 @@
 
 Enemy::Enemy(int id, sf::Vector2f position, std::string name) : m_id(id), m_name("default")
 {
-	/*if (!pTexture.loadFromFile("ASSETS/IMAGES/player.png"))
-		std::cout << "Error loading player.png" << std::endl;
-	this->setTexture(pTexture);
-	this->setPosition(position);
-	this->setName(name);*/
-
 	initEnemy();
+	isTagged = false;
 }
 
 
@@ -20,6 +15,11 @@ Enemy::~Enemy()
 void Enemy::draw(sf::RenderWindow& window) const
 {
 	window.draw(m_circle);
+}
+
+void Enemy::setTaggedStatus(bool tagged)
+{
+	isTagged = tagged;
 }
 
 void Enemy::initEnemy()

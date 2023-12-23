@@ -40,6 +40,7 @@ void Network::send(Player* p)
 	temp << p->getID();
 	temp << p->getPosition().x;
 	temp << p->getPosition().y;
+	temp << p->getPlayerTag();
 
 	if (connection.send(temp) != sf::Socket::Done)
 	{
@@ -56,6 +57,7 @@ void Network::sendPosition(Player* p)
 		temp << p->getID();
 		temp << p->getPosition().x;
 		temp << p->getPosition().y;
+		temp << p->getPlayerTag();
 
 		if (connection.send(temp) != sf::Socket::Done)
 		{
@@ -156,9 +158,12 @@ void Network::receive(std::vector<std::unique_ptr<Enemy>>& enemies, Player* p)
 				if (enemies[i]->getID() == id)
 				{
 					sf::Vector2f pos;
+					bool isNewTagged;
 					receivePacket >> pos.x;
 					receivePacket >> pos.y;
+					receivePacket >> isNewTagged;
 					enemies[i]->setPosition(pos);
+					enemies[i]->setTaggedStatus(isNewTagged);
 					break;
 				}
 			}
@@ -170,9 +175,12 @@ void Network::receive(std::vector<std::unique_ptr<Enemy>>& enemies, Player* p)
 				if (enemies[i]->getID() == id)
 				{
 					sf::Vector2f pos;
+					bool isNewTagged;
 					receivePacket >> pos.x;
 					receivePacket >> pos.y;
+					receivePacket >> isNewTagged;
 					enemies[i]->setPosition(pos);
+					enemies[i]->setTaggedStatus(isNewTagged);
 					break;
 				}
 			}
@@ -241,6 +249,21 @@ void Network::receive(std::vector<std::unique_ptr<Enemy>>& enemies, Player* p)
 			}
 			playersName.clear();
 			playersId.clear();
+		}
+		else if (type == 8) // Packet for tagging information
+		{
+			int playerID;
+			bool isTagged;
+			receivePacket >> playerID >> isTagged;
+
+			for (const auto& enemy : enemies)
+			{
+				if (enemy->getID() == playerID)
+				{
+					enemy->setTaggedStatus(isTagged);
+					break;
+				}
+			}
 		}
 	}
 }

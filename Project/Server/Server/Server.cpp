@@ -37,7 +37,7 @@ void Server::run()
 
 						if (m_playerList.back().getSocket()->send(outPacket) != sf::Socket::Done) //Send client id
 						{
-							std::cout << "error sending player index" << std::endl;
+							std::cout << "Error sending player index" << std::endl;
 						}
 						m_currentID++;
 					}
@@ -54,8 +54,6 @@ void Server::run()
 						std::cout << "User tried to connect but the server was full" << std::endl;
 					}
 				}
-
-
 			}
 			else
 			{
@@ -84,7 +82,7 @@ void Server::run()
 									if (itr.getId() == id)
 									{
 										std::cout << std::endl << "Client disconnected!" << std::endl;
-										std::cout << "	ID: " << itr.getId() << " Name: " << itr.getName() << std::endl;
+										std::cout << "ID: " << itr.getId() << " Name: " << itr.getName() << std::endl;
 									}
 								}
 								m_selector.remove(*m_playerList[i].getSocket());
@@ -127,11 +125,11 @@ void Server::run()
 									received >> nameHolder;
 									m_playerList[i].setName(nameHolder);
 									std::cout << std::endl << std::endl << "New client added." << std::endl;
-									std::cout << "	ID: " << id << " Name: " << nameHolder << std::endl;
+									std::cout << "ID: " << id << " Name: " << nameHolder << std::endl;
 									std::cout << "Number of players: " << m_playerNumber << std::endl;
 								}
 							}
-							else if (num == 7) //send client list with id and names  When player recive this it goes through the list and compares it with its list, if he finds a number that he doesn't have he creates a enemy with that id
+							else if (num == 7) //send client list
 							{
 								sf::Packet namePacket;
 								namePacket << 7;
@@ -163,14 +161,12 @@ void Server::run()
 							m_playerNumber--;
 							break;
 						}
-					} // end of player socket is ready
+					}
 				}
 			}
 		}
 	}
 }
-
-
 
 void Server::sendPacket(sf::Packet & packet, unsigned int skip)
 {
@@ -185,4 +181,14 @@ void Server::sendPacket(sf::Packet & packet, unsigned int skip)
 			std::cout << "Error sending packet in sendPacket func" << std::endl;
 		}
 	}
+}
+
+void Server::tagPlayer(int playerID, bool isTagged) 
+{
+	sf::Packet tagPacket;
+	tagPacket << 8;
+	tagPacket << playerID;
+	tagPacket << isTagged;
+
+	sendPacket(tagPacket);
 }

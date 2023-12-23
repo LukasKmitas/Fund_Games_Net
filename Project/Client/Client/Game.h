@@ -25,11 +25,14 @@ private:
 
 	void initPlayerName();
 
+	void checkTags();
+	bool checkCollision(Player& player, Enemy& enemy);
+
 	unsigned short port;
 	sf::IpAddress ipAdress;
 	sf::TcpSocket socket;
 
-	sf::Clock m_clock;
+	sf::Clock m_clock; //To make sure the time aligns between clients
 	sf::Time m_positionTimer;
 
 	Player m_player;

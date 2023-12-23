@@ -16,6 +16,7 @@ public:
 private:
 
 	void sendPacket(sf::Packet& packet, unsigned int skip = -1);
+	void tagPlayer(int playerID, bool isTagged);
 	bool m_isRunning;
 
 	sf::IpAddress m_ipAdress;
