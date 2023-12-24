@@ -8,7 +8,7 @@ Game::Game() :
 	ipAdress = "localhost";
 	network = std::make_unique<Network>(ipAdress, port);
 	
-	//initPlayerName();
+	initPlayerName();
 
 	socket.setBlocking(false);
 }
@@ -37,7 +37,6 @@ void Game::run()
 		render();
 	}
 }
-
 
 void Game::processEvents()
 {
@@ -74,7 +73,7 @@ void Game::update(sf::Time t_deltaTime)
 	if (newPosition != lastSentPosition)
 	{
 		lastSentPosition = newPosition;
-		network->sendPosition(&m_player);
+		network->send(&m_player);
 	}
 
 	network->receive(enemies, &m_player);
@@ -96,7 +95,14 @@ void Game::update(sf::Time t_deltaTime)
 		if (enemies[i]->isTagged && enemies[i]->collisionCooldown.getElapsedTime() < enemies[i]->cooldownDuration)
 		{
 			enemies[i]->m_circle.setFillColor(sf::Color::Yellow);
-			std::cout << "Player is on cooldown. Remaining time: " << enemies[i]->cooldownDuration.asSeconds() - enemies[i]->collisionCooldown.getElapsedTime().asSeconds() << " seconds." << std::endl;
+			int remainingTime = static_cast<int>(enemies[i]->cooldownDuration.asSeconds() - enemies[i]->collisionCooldown.getElapsedTime().asSeconds());
+			static int previousTime = -1;
+
+			if (remainingTime != previousTime)
+			{
+				std::cout << "Player is on cooldown. Remaining time: " << remainingTime << " seconds." << std::endl;
+				previousTime = remainingTime;
+			}
 		}
 	}
 
@@ -105,6 +111,7 @@ void Game::update(sf::Time t_deltaTime)
 		m_player.update(t_deltaTime);
 	}
 	checkTags();
+	wrapAround(m_player);
 }
 
 void Game::render()
@@ -177,8 +184,39 @@ bool Game::checkCollision(Player& player, Enemy& enemy)
 
 	if (playerBounds.intersects(enemyBounds))
 	{
-		std::cout << "Enemy Tagged" << std::endl;
+		//std::cout << "Enemy Tagged" << std::endl;
 		return true;
 	}
 	return false;
+}
+
+/// <summary>
+/// To wrap around the world, so it you enter the left screen side you
+/// should appear on th right
+/// </summary>
+/// <param name="player"></param>
+void Game::wrapAround(Player& player)
+{
+	sf::Vector2f playerPos = player.getPosition();
+	float playerRadius = player.getRadius();
+
+	sf::Vector2u windowSize = m_window.getSize();
+
+	if (playerPos.x + playerRadius < 0.0f)
+	{
+		player.m_circle.setPosition(windowSize.x + playerRadius, playerPos.y);
+	}
+	else if (playerPos.x - playerRadius > windowSize.x)
+	{
+		player.m_circle.setPosition(-playerRadius, playerPos.y);
+	}
+
+	if (playerPos.y + playerRadius < 0.0f)
+	{
+		player.m_circle.setPosition(playerPos.x, windowSize.y + playerRadius);
+	}
+	else if (playerPos.y - playerRadius > windowSize.y)
+	{
+		player.m_circle.setPosition(playerPos.x, -playerRadius);
+	}
 }

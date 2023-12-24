@@ -27,6 +27,7 @@ private:
 
 	void checkTags();
 	bool checkCollision(Player& player, Enemy& enemy);
+	void wrapAround(Player& player);
 
 	unsigned short port;
 	sf::IpAddress ipAdress;

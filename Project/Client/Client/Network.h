@@ -12,7 +12,6 @@ public:
 	void disconnect(Player* p);
 
 	void send(Player* p);
-	void sendPosition(Player* p);
 	void receive(std::vector<std::unique_ptr<Enemy>>& enemies, Player* p);
 	void sendMessage(Player* p, std::string& text);
 	void sendMyName(Player* p);

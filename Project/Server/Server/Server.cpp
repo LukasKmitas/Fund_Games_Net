@@ -94,21 +94,14 @@ void Server::run()
 							//Number 2 means the server is full
 							//it is sent only to the player who cannot connect
 
-							else if (num == 3) //Moving direction
+							else if (num == 3) // Players info
 							{
 								if (id != -1)
 								{
 									sendPacket(received, i);
 								}
 							}
-							else if (num == 4) //Position
-							{
-								if (id != -1)
-								{
-									sendPacket(received, i);
-								}
-							}
-							else if (num == 5) //Send text message
+							else if (num == 4) //Send text message
 							{
 								for (unsigned int k = 0; k < m_playerList.size(); k++)
 								{
@@ -117,7 +110,7 @@ void Server::run()
 									std::cout << "Sent: " << (received >> messageSent) << std::endl;
 								}
 							}
-							else if (num == 6) //Save player name
+							else if (num == 5) //Save player name
 							{
 								if (m_playerList[i].getId() == id)
 								{
@@ -129,10 +122,10 @@ void Server::run()
 									std::cout << "Number of players: " << m_playerNumber << std::endl;
 								}
 							}
-							else if (num == 7) //send client list
+							else if (num == 6) //send client list
 							{
 								sf::Packet namePacket;
-								namePacket << 7;
+								namePacket << 6;
 								namePacket << 0;
 								namePacket << m_playerNumber;
 
@@ -168,6 +161,11 @@ void Server::run()
 	}
 }
 
+/// <summary>
+/// Sends the packet to clients
+/// </summary>
+/// <param name="packet"></param>
+/// <param name="skip"></param>
 void Server::sendPacket(sf::Packet & packet, unsigned int skip)
 {
 	for (unsigned int i = 0; i < m_playerList.size(); ++i)
@@ -178,15 +176,20 @@ void Server::sendPacket(sf::Packet & packet, unsigned int skip)
 		}
 		if (m_playerList[i].getSocket()->send(packet) != sf::Socket::Done)
 		{
-			std::cout << "Error sending packet in sendPacket func" << std::endl;
+			std::cout << "Error sending packet" << std::endl;
 		}
 	}
 }
 
+/// <summary>
+/// For tagging the players
+/// </summary>
+/// <param name="playerID"></param>
+/// <param name="isTagged"></param>
 void Server::tagPlayer(int playerID, bool isTagged) 
 {
 	sf::Packet tagPacket;
-	tagPacket << 8;
+	tagPacket << 7;
 	tagPacket << playerID;
 	tagPacket << isTagged;
 

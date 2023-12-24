@@ -9,7 +9,7 @@ Network::Network(sf::IpAddress& ip, unsigned short& port)  : m_connected(false)
 	else
 	{
 		connection.setBlocking(false);
-		std::cout << "Connected " << std::endl;
+		std::cout << "Connected to server" << std::endl;
 	}
 }
 
@@ -33,6 +33,10 @@ void Network::disconnect(Player* p)
 	}
 }
 
+/// <summary>
+/// Sends players info to server
+/// </summary>
+/// <param name="p"></param>
 void Network::send(Player* p)
 {
 	sf::Packet temp;
@@ -48,29 +52,15 @@ void Network::send(Player* p)
 	}
 }
 
-void Network::sendPosition(Player* p)
-{
-	if(m_connected)
-	{
-		sf::Packet temp;
-		temp << 4;
-		temp << p->getID();
-		temp << p->getPosition().x;
-		temp << p->getPosition().y;
-		temp << p->getPlayerTag();
-
-		if (connection.send(temp) != sf::Socket::Done)
-		{
-			std::cout << "Error sending data to server" << std::endl;
-		}
-	}
-}
-
-
+/// <summary>
+/// Sends a message to server
+/// </summary>
+/// <param name="p"></param>
+/// <param name="text"></param>
 void Network::sendMessage(Player* p, std::string& text)
 {
 	sf::Packet temp;
-	temp << 5;
+	temp << 4;
 	temp << p->getID();
 	temp << text;
 
@@ -83,11 +73,14 @@ void Network::sendMessage(Player* p, std::string& text)
 	}
 }
 
-
+/// <summary>
+/// Sends the players name
+/// </summary>
+/// <param name="p"></param>
 void Network::sendMyName(Player* p)
 {
 	sf::Packet temp;
-	temp << 6;
+	temp << 5;
 	temp << p->getID();
 	temp << p->getName();
 
@@ -98,10 +91,14 @@ void Network::sendMyName(Player* p)
 
 }
 
+/// <summary>
+/// Sends the player list
+/// </summary>
+/// <param name="p"></param>
 void Network::getPlayerList(Player* p)
 {
 	sf::Packet temp;
-	temp << 7;
+	temp << 6;
 	temp << p->getID();
 
 	if (connection.send(temp) != sf::Socket::Done)
@@ -110,8 +107,12 @@ void Network::getPlayerList(Player* p)
 	}
 }
 
-
-
+/// <summary>
+/// Receive the stuff from the server
+/// and handles the variables going between
+/// </summary>
+/// <param name="enemies"> enemies </param>
+/// <param name="p"> player </param>
 void Network::receive(std::vector<std::unique_ptr<Enemy>>& enemies, Player* p)
 {
 	sf::Packet receivePacket;
@@ -127,7 +128,6 @@ void Network::receive(std::vector<std::unique_ptr<Enemy>>& enemies, Player* p)
 			if (p->getID() == -1)
 			{
 				p->setID(id);
-				std::cout << "Connected to server" << std::endl;
 				std::cout << "ID: " << p->getID() << std::endl;
 				this->sendMyName(p);
 				sf::sleep(sf::milliseconds(50));
@@ -151,7 +151,7 @@ void Network::receive(std::vector<std::unique_ptr<Enemy>>& enemies, Player* p)
 		{
 			std::cout << "Server is full" << std::endl;
 		}
-		else if (type == 3) // get position of enemys
+		else if (type == 3) // player/enemies info
 		{
 			for (unsigned int i = 0; i < enemies.size(); i++)
 			{
@@ -168,24 +168,7 @@ void Network::receive(std::vector<std::unique_ptr<Enemy>>& enemies, Player* p)
 				}
 			}
 		}
-		else if (type == 4) //Set player position to the recived position
-		{
-			for (unsigned int i = 0; i < enemies.size(); i++)
-			{
-				if (enemies[i]->getID() == id)
-				{
-					sf::Vector2f pos;
-					bool isNewTagged;
-					receivePacket >> pos.x;
-					receivePacket >> pos.y;
-					receivePacket >> isNewTagged;
-					enemies[i]->setPosition(pos);
-					enemies[i]->setTaggedStatus(isNewTagged);
-					break;
-				}
-			}
-		}
-		else if (type == 5) // chat message received
+		else if (type == 4) // chat message received
 		{
 			std::string receivedMessage;
 			receivePacket >> receivedMessage;
@@ -209,9 +192,9 @@ void Network::receive(std::vector<std::unique_ptr<Enemy>>& enemies, Player* p)
 				m_textMessage = senderName + ":" + newString;
 			}
 		}
-		//Number 6 is reserved by the server for saving the name
+		//Number 5 is reserved by the server for saving the name
 
-		else if (type == 7) //Create new players
+		else if (type == 6) //Create new players
 		{
 			int playerNumber;
 			std::vector<std::string> playersName;
@@ -250,7 +233,7 @@ void Network::receive(std::vector<std::unique_ptr<Enemy>>& enemies, Player* p)
 			playersName.clear();
 			playersId.clear();
 		}
-		else if (type == 8) // Packet for tagging information
+		else if (type == 7) // Packet for tagging information
 		{
 			int playerID;
 			bool isTagged;
